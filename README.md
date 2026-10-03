@@ -1,9 +1,5 @@
 # Market Risk & Margin Back-Testing Framework
 
-A clean, readable Python project that estimates and back-tests historical Value-at-Risk (VaR), Expected Shortfall, and a VaR-based initial margin for a multi-asset portfolio. Written for a second-year student who needs to explain every concept in a plain-English interview.
-
----
-
 ## How to run
 
 ```bash
@@ -93,12 +89,3 @@ We replay the actual returns from three crisis windows (GFC 2008, COVID 2020, 20
 
 ---
 
-## Honest limitations
-
-1. **ETF and FX proxies.** SPY, TLT, LQD, GLD are ETFs — not the raw asset classes. Actual returns may differ due to expense ratios, tracking error, and liquidity.
-2. **Equal weights are illustrative.** Real portfolios are not equal-weighted and weights change over time.
-3. **No transaction costs** or bid-ask spreads are modelled. Real trading would reduce returns.
-4. **VaR-based margin is NOT SIMM.** The regulatory Standard Initial Margin Model (SIMM) is far more complex. This project is a simplified educational illustration only.
-5. **Past data may not predict the future.** Historical VaR implicitly assumes the next bad day will look like a past bad day. It can completely miss new types of crises.
-6. **Short memory.** A 250-day window quickly forgets events older than a year, so the model is slow to react when a new crisis begins.
-7. **No correlation between days.** Historical simulation assumes returns are independent across time. In practice, volatility clusters (bad days tend to follow bad days).
