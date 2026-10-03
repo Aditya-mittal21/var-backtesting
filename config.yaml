@@ -1,0 +1,86 @@
+# =============================================================================
+# Market Risk & Margin Back-Testing Framework — Configuration
+# =============================================================================
+
+data:
+  tickers:
+    - SPY      # US equity (S&P 500 ETF)
+    - TLT      # Long-term US Treasuries ETF
+    - LQD      # Investment-grade corporate bonds ETF
+    - GLD      # Gold ETF
+    - EURUSD=X # Euro / US Dollar FX rate
+    - USDINR=X # US Dollar / Indian Rupee FX rate
+  start_date: "2007-01-01"
+  cache_file: "data/prices.csv"
+  max_ffill_days: 2   # Forward-fill gaps of at most this many days
+
+portfolios:
+  equal_weight:
+    name: "Equal-Weight"
+    weights:
+      SPY: 0.1667
+      TLT: 0.1667
+      LQD: 0.1667
+      GLD: 0.1667
+      "EURUSD=X": 0.1667
+      "USDINR=X": 0.1665   # slightly less so weights sum to 1.0
+  sixty_forty:
+    name: "60/40"
+    weights:
+      SPY: 0.60
+      TLT: 0.40
+      LQD: 0.00
+      GLD: 0.00
+      "EURUSD=X": 0.00
+      "USDINR=X":  0.00
+
+risk:
+  window: 250          # Rolling window in trading days
+  confidence: 0.99     # VaR confidence level (99%)
+  var_days: 1          # VaR horizon in days
+  margin_days: 10      # Margin horizon in days (10-day VaR for initial margin)
+  floor_lookback: 756  # 3 years approx 252 * 3 trading days for floor variant
+  floor_fraction: 0.50 # Margin floor = 50% of the highest level in last 3 years
+
+# Basel traffic-light zone boundaries (exception counts in 250-day window)
+traffic_light:
+  green_max: 4    # 0-4 exceptions -> green
+  yellow_max: 9   # 5-9 exceptions -> yellow
+  # 10+ exceptions -> red
+
+# Historical stress periods
+stress_periods:
+  GFC:
+    label: "Global Financial Crisis"
+    start: "2008-09-02"
+    end:   "2008-11-20"
+  COVID:
+    label: "COVID-19 Crash"
+    start: "2020-02-19"
+    end:   "2020-03-23"
+  RateShock2022:
+    label: "2022 Rate Shock"
+    start: "2022-01-03"
+    end:   "2022-10-14"
+
+# Hypothetical shocks: fixed percentage move per asset (positive = price UP)
+# Loss to portfolio = -1 * (weight * shock)
+hypothetical_shocks:
+  equity_crash:
+    label: "Equity Crash"
+    shocks:
+      SPY: -0.25
+      LQD: -0.08
+      TLT:  0.05
+      GLD:  0.05
+      "EURUSD=X": -0.05
+      "USDINR=X":  0.04
+  bond_selloff:
+    label: "Bond Sell-Off"
+    shocks:
+      TLT: -0.15
+      LQD: -0.08
+      SPY: -0.05
+      GLD:  0.00
+      "EURUSD=X": 0.00
+      "USDINR=X":  0.00
